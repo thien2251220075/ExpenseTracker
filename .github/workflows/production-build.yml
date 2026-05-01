@@ -1,0 +1,32 @@
+name: Production build
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-production-images:
+    name: Build production containers
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build production Docker images
+        run: docker compose -f docker-compose.prod.yml build
+
+      - name: Start production stack
+        run: |
+          docker compose -f docker-compose.prod.yml up -d
+          sleep 10
+
+      - name: Smoke test production API
+        run: |
+          curl --fail http://localhost/api/health
+
+      - name: Tear down production stack
+        if: always()
+        run: docker compose -f docker-compose.prod.yml down
