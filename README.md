@@ -1,31 +1,31 @@
 # Expense Tracker
 
-A fullstack expense tracking app with React frontend, Express backend, PostgreSQL database, and Docker compose.
+Ứng dụng quản lý chi tiêu fullstack với frontend React, backend Express, cơ sở dữ liệu PostgreSQL và Docker Compose.
 
-## Architecture
+## Kiến trúc
 - Frontend: React + Vite
 - Backend: Node.js + Express + PostgreSQL
-- Database: PostgreSQL in Docker
-- Docker compose: frontend, backend, database services
-- CI: GitHub Actions for lint, test, and build
+- Cơ sở dữ liệu: PostgreSQL chạy trong Docker
+- Docker Compose: frontend, backend, database
+- CI: GitHub Actions để lint, test và build
 
-## Run locally with Docker
-1. Copy `.env.example` to `.env` and update values if needed.
-2. Run `docker compose up --build -d`
+## Chạy cục bộ với Docker
+1. Sao chép `.env.example` thành `.env` và cập nhật giá trị nếu cần.
+2. Chạy `docker compose up --build -d`
 3. Frontend: http://localhost:3000
 4. Backend API: http://localhost:4000/api
 
-## Production deployment with Docker
-1. Copy `.env.example` to `.env` and verify production values.
-2. Run `docker compose -f docker-compose.prod.yml up --build -d`
+## Triển khai production với Docker
+1. Sao chép `.env.example` thành `.env` và kiểm tra các giá trị production.
+2. Chạy `docker compose -f docker-compose.prod.yml up --build -d`
 3. Frontend: http://localhost
 4. Backend API: http://localhost:4000/api
 
 ## GitHub Actions production build
-- `./github/workflows/production-build.yml` builds the production container images.
-- The workflow also starts the production stack and runs a smoke test against `/api/health`.
+- `./github/workflows/production-build.yml` sẽ xây dựng các image container production.
+- Workflow cũng khởi chạy stack production và chạy test khói trên endpoint `/api/health`.
 
-## Endpoints
+## Các endpoint
 - `GET /api/health`
 - `GET /api/transactions`
 - `GET /api/summary`
@@ -33,18 +33,18 @@ A fullstack expense tracking app with React frontend, Express backend, PostgreSQ
 - `PUT /api/transactions/:id`
 - `DELETE /api/transactions/:id`
 
-## Notes
-- Frontend uses `VITE_API_URL` to call backend without hardcoded URLs.
-- Backend logs errors to console and returns status codes.
-- Database schema is initialized automatically on startup.
+## Ghi chú
+- Frontend sử dụng `VITE_API_URL` để gọi backend mà không hardcode URL.
+- Backend ghi log lỗi ra console và trả về mã trạng thái phù hợp.
+- Cấu trúc database được khởi tạo tự động khi khởi động.
 
-## Branching and commit workflow
-- `main`: production-ready release branch.
-- `dev`: active integration branch for ongoing development.
-- `feature/*`: dedicated branches for each individual feature or improvement.
+## Quy trình nhánh và commit
+- `main`: nhánh phát hành, luôn giữ trạng thái production-ready.
+- `dev`: nhánh tích hợp chính, dùng cho phát triển đang diễn ra.
+- `feature/*`: nhánh riêng cho từng tính năng hoặc cải tiến.
 
-### Best practices
-- Commit often and keep each commit focused on a single change.
-- Use descriptive commit messages like `feat: add transaction summary endpoint` or `fix: correct Docker healthcheck`.
-- Do not combine all work into a single final commit.
-- Merge `feature/*` branches into `dev`, then promote `dev` to `main` after validation.
+### Thực hành tốt nhất
+- Commit thường xuyên và giữ mỗi commit chỉ tập trung vào một thay đổi.
+- Dùng thông điệp commit rõ ràng, ví dụ `feat: add transaction summary endpoint` hoặc `fix: correct Docker healthcheck`.
+- Không gộp tất cả công việc vào một commit cuối cùng.
+- Merge các nhánh `feature/*` vào `dev`, rồi sau khi kiểm tra xong mới đưa `dev` lên `main`.
