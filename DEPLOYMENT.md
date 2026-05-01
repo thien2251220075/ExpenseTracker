@@ -1,42 +1,42 @@
-# Deployment Documentation
+# Tài liệu Triển khai
 
-## Current production deployment setup
+## Thiết lập production hiện tại
 
-This project is containerized and can be deployed using Docker Compose.
+Dự án này được container hoá và có thể triển khai bằng Docker Compose.
 
-- `docker-compose.yml` for local development compose
-- `docker-compose.prod.yml` for production-style compose
-- `frontend/Dockerfile` uses a multi-stage build for smaller image size
-- `backend/Dockerfile` uses `NODE_ENV=production`
-- `frontend/.env.production` configures the frontend production API URL to `/api`
+- `docker-compose.yml` dùng cho môi trường phát triển local
+- `docker-compose.prod.yml` dùng cho môi trường production-style
+- `frontend/Dockerfile` sử dụng build nhiều giai đoạn để giảm kích thước image
+- `backend/Dockerfile` sử dụng `NODE_ENV=production`
+- `frontend/.env.production` cấu hình URL API production của frontend thành `/api`
 
-## Deploy options
+## Tùy chọn triển khai
 
-This repo supports deployment to:
-- VPS / WSL Ubuntu with Docker
+Repo này hỗ trợ triển khai lên:
+- VPS / WSL Ubuntu với Docker
 - Docker VPS
-- Cloud platform such as Render
+- Nền tảng cloud như Render
 
-### 1. Deploy on VPS / WSL (recommended)
+### 1. Triển khai trên VPS / WSL (khuyến nghị)
 
-This is the simplest real deployment because it uses Docker on a real host.
+Đây là cách triển khai thực tế dễ nhất vì dùng Docker trên máy chủ thực.
 
-1. Install Docker and Docker Compose on the target machine.
-2. Clone the repository on the target machine.
-3. Copy `.env.example` to `.env` and update values if needed.
-4. On the target machine, run:
+1. Cài Docker và Docker Compose trên máy chủ đích.
+2. Clone repository trên máy chủ đích.
+3. Sao chép `.env.example` thành `.env` và cập nhật các giá trị nếu cần.
+4. Trên máy chủ đích, chạy:
 
 ```bash
 bash deploy-vps.sh
 ```
 
-5. Verify services:
+5. Kiểm tra các service:
 
 ```bash
 docker compose -f docker-compose.prod.yml ps
 ```
 
-6. View logs if needed:
+6. Xem log nếu cần:
 
 ```bash
 docker compose -f docker-compose.prod.yml logs backend
@@ -44,69 +44,69 @@ docker compose -f docker-compose.prod.yml logs frontend
 docker compose -f docker-compose.prod.yml logs db
 ```
 
-### Access
+### Truy cập
 - Frontend: `http://<server-ip>`
 - Backend health: `http://<server-ip>:4000/api/health`
 
-### 2. Deploy on Cloud using Render
+### 2. Triển khai lên Cloud bằng Render
 
-Render can run backend and frontend as separate web services.
+Render có thể chạy backend và frontend dưới dạng các web service riêng.
 
 #### Frontend
-- Deploy `frontend` as a static site or Docker service.
-- Set `build command` to `npm install && npm run build`.
-- Set `publish directory` to `dist`.
-- Add environment variable: `VITE_API_URL=/api` if frontend is served behind a proxy.
+- Triển khai `frontend` như một static site hoặc Docker service.
+- Đặt `build command` là `npm install && npm run build`.
+- Đặt `publish directory` là `dist`.
+- Thêm biến môi trường: `VITE_API_URL=/api` nếu frontend được phục vụ qua proxy.
 
 #### Backend
-- Deploy `backend` as a web service or Docker service.
-- Set env vars:
+- Triển khai `backend` như một web service hoặc Docker service.
+- Đặt các biến môi trường:
   - `DATABASE_URL`
   - `PORT=4000`
   - `NODE_ENV=production`
 
 #### Database
-- Use either:
-  - a managed Postgres service on Render, or
-  - a separate Postgres server/container
+- Dùng một trong:
+  - dịch vụ Postgres quản lý trên Render, hoặc
+  - một server/container Postgres riêng
 
-#### Notes
-- Render does not directly support multi-service app in one click, so deploy backend and frontend separately or use a render.yaml manifest.
-- Ensure backend CORS is configured if frontend and backend are on different domains.
+#### Ghi chú
+- Render không hỗ trợ trực tiếp app nhiều service chỉ bằng một click, nên cần triển khai backend và frontend riêng hoặc dùng file `render.yaml`.
+- Đảm bảo backend đã cấu hình CORS nếu frontend và backend chạy trên các domain khác nhau.
 
-### 3. Deploy with Vercel
+### 3. Triển khai với Vercel
 
-Vercel is best for frontend only.
-- Deploy `frontend` as a Vite app.
-- Set `Build Command` to `npm run build`.
-- Set `Output Directory` to `dist`.
-- Set `Environment Variable` `VITE_API_URL` to your backend URL.
+Vercel phù hợp nhất cho frontend.
+- Triển khai `frontend` như một app Vite.
+- Đặt `Build Command` là `npm run build`.
+- Đặt `Output Directory` là `dist`.
+- Đặt `Environment Variable` `VITE_API_URL` là URL backend của bạn.
 
-For a full system, backend must run elsewhere (Render, VPS, etc.).
+Với hệ thống đầy đủ, backend phải chạy ở nơi khác (Render, VPS, v.v.).
 
-## Production run commands
+## Lệnh chạy production
 
 ```bash
 cp .env.example .env
 docker compose -f docker-compose.prod.yml up --build -d
 ```
 
-## Deployment checks
+## Kiểm tra trước khi deploy
 
-- Ensure `frontend/.env.production` exists with:
+- Đảm bảo `frontend/.env.production` tồn tại với:
   - `VITE_API_URL=/api`
-- Ensure `.env.example` is committed, `.env` is ignored.
-- Ensure `docker-compose.prod.yml` is used for production startup.
+- Đảm bảo `.env.example` được commit, `.env` được ignore.
+- Đảm bảo sử dụng `docker-compose.prod.yml` để khởi động production.
 
-## What is “real deployment” here?
+## “Triển khai thực tế” ở đây là gì?
 
-Real deployment means the app runs on a remote or server environment, not only on your dev PC, such as:
-- VPS / WSL Ubuntu server
-- Docker host in the cloud
-- Render / Vercel / similar service
+Triển khai thực tế có nghĩa app chạy trên môi trường remote hoặc máy chủ, không chỉ trên máy dev của bạn, như:
+- VPS / server Ubuntu WSL
+- Docker host trên cloud
+- Render / Vercel / dịch vụ tương tự
 
-## Notes
+## Ghi chú
 
-- Docker Desktop is not required for real deployment.
-- The backend and database must run in production containers.
-- The frontend should use env vars and relative API paths, not hardcoded local URLs.
+- Docker Desktop không bắt buộc cho triển khai thực tế.
+- Backend và database phải chạy trong container production.
+- Frontend cần sử dụng biến môi trường và đường dẫn API tương đối, không hardcode URL local.
